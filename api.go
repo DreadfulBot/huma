@@ -1,10 +1,10 @@
 package huma
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -64,7 +64,7 @@ type Context interface {
 	Operation() *Operation
 
 	// Context returns the underlying request context.
-	Context() context.Context
+	Context() *gin.Context
 
 	// Method returns the HTTP method for the request.
 	Method() string
@@ -115,26 +115,27 @@ type (
 	humaContext Context
 	subContext  struct {
 		humaContext
-		override context.Context
+		override *gin.Context
 	}
 )
 
-func (c subContext) Context() context.Context {
+func (c subContext) Context() *gin.Context {
 	return c.override
 }
 
 // WithContext returns a new `huma.Context` with the underlying `context.Context`
 // replaced with the given one. This is useful for middleware that needs to
 // modify the request context.
-func WithContext(ctx Context, override context.Context) Context {
+func WithContext(ctx Context, override *gin.Context) Context {
 	return subContext{humaContext: ctx, override: override}
 }
 
 // WithValue returns a new `huma.Context` with the given key and value set in
 // the underlying `context.Context`. This is useful for middleware that needs to
 // set request-scoped values.
-func WithValue(ctx Context, key, value any) Context {
-	return WithContext(ctx, context.WithValue(ctx.Context(), key, value))
+func WithValue(ctx Context, key string, value any) Context {
+	ctx.Context().Set(key, value)
+	return WithContext(ctx, ctx.Context())
 }
 
 // Transformer is a function that can modify a response body before it is

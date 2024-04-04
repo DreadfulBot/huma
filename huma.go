@@ -9,10 +9,10 @@ package huma
 
 import (
 	"bytes"
-	"context"
 	"encoding"
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"net"
 	"net/http"
@@ -546,7 +546,7 @@ func writeHeader(write func(string, string), info *headerInfo, f reflect.Value) 
 //		resp.Body.Message = fmt.Sprintf("Hello, %s!", input.Name)
 //		return resp, nil
 //	})
-func Register[I, O any](api API, op Operation, handler func(context.Context, *I) (*O, error)) {
+func Register[I, O any](api API, op Operation, handler func(gin.Context, *I) (*O, error)) {
 	oapi := api.OpenAPI()
 	registry := oapi.Components.Schemas
 
@@ -1263,7 +1263,7 @@ func Register[I, O any](api API, op Operation, handler func(context.Context, *I)
 			return
 		}
 
-		output, err := handler(ctx.Context(), &input)
+		output, err := handler(*ctx.Context(), &input)
 		if err != nil {
 			status := http.StatusInternalServerError
 			if se, ok := err.(StatusError); ok {
@@ -1425,7 +1425,7 @@ var GenerateSummary = func(method, path string, response any) string {
 	return strings.ToUpper(phrase[:1]) + phrase[1:]
 }
 
-func convenience[I, O any](api API, method, path string, handler func(context.Context, *I) (*O, error)) {
+func convenience[I, O any](api API, method, path string, handler func(gin.Context, *I) (*O, error)) {
 	var o *O
 	Register(api, Operation{
 		OperationID: GenerateOperationID(method, path, o),
@@ -1452,7 +1452,7 @@ func convenience[I, O any](api API, method, path string, handler func(context.Co
 //	})
 //
 // This is a convenience wrapper around `huma.Register`.
-func Get[I, O any](api API, path string, handler func(context.Context, *I) (*O, error)) {
+func Get[I, O any](api API, path string, handler func(gin.Context, *I) (*O, error)) {
 	convenience(api, http.MethodGet, path, handler)
 }
 
@@ -1473,7 +1473,7 @@ func Get[I, O any](api API, path string, handler func(context.Context, *I) (*O, 
 //	})
 //
 // This is a convenience wrapper around `huma.Register`.
-func Post[I, O any](api API, path string, handler func(context.Context, *I) (*O, error)) {
+func Post[I, O any](api API, path string, handler func(gin.Context, *I) (*O, error)) {
 	convenience(api, http.MethodPost, path, handler)
 }
 
@@ -1494,7 +1494,7 @@ func Post[I, O any](api API, path string, handler func(context.Context, *I) (*O,
 //	})
 //
 // This is a convenience wrapper around `huma.Register`.
-func Put[I, O any](api API, path string, handler func(context.Context, *I) (*O, error)) {
+func Put[I, O any](api API, path string, handler func(gin.Context, *I) (*O, error)) {
 	convenience(api, http.MethodPut, path, handler)
 }
 
@@ -1515,7 +1515,7 @@ func Put[I, O any](api API, path string, handler func(context.Context, *I) (*O, 
 //	})
 //
 // This is a convenience wrapper around `huma.Register`.
-func Patch[I, O any](api API, path string, handler func(context.Context, *I) (*O, error)) {
+func Patch[I, O any](api API, path string, handler func(gin.Context, *I) (*O, error)) {
 	convenience(api, http.MethodPatch, path, handler)
 }
 
@@ -1534,6 +1534,6 @@ func Patch[I, O any](api API, path string, handler func(context.Context, *I) (*O
 //	})
 //
 // This is a convenience wrapper around `huma.Register`.
-func Delete[I, O any](api API, path string, handler func(context.Context, *I) (*O, error)) {
+func Delete[I, O any](api API, path string, handler func(gin.Context, *I) (*O, error)) {
 	convenience(api, http.MethodDelete, path, handler)
 }
