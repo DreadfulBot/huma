@@ -4,9 +4,9 @@
 package huma
 
 import (
+	"github.com/DreadfulBot/huma/humacli"
 	"log"
 
-	"github.com/danielgtaylor/huma/v2/humacli"
 	"github.com/spf13/cobra"
 )
 

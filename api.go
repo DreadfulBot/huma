@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/DreadfulBot/huma/negotiation"
 	"github.com/gin-gonic/gin"
 	"io"
 	"mime/multipart"
@@ -14,8 +15,6 @@ import (
 	"regexp"
 	"strings"
 	"time"
-
-	"github.com/danielgtaylor/huma/v2/negotiation"
 )
 
 var rxSchema = regexp.MustCompile(`#/components/schemas/([^"]+)`)

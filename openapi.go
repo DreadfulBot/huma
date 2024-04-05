@@ -3,11 +3,10 @@ package huma
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/DreadfulBot/huma/yaml"
 	"net/http"
 	"reflect"
 	"time"
-
-	"github.com/danielgtaylor/huma/v2/yaml"
 )
 
 type omitType int

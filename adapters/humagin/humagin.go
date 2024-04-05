@@ -1,7 +1,7 @@
 package humagin
 
 import (
-	"context"
+	"github.com/DreadfulBot/huma"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/danielgtaylor/huma/v2"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,8 +25,8 @@ func (c *ginCtx) Operation() *huma.Operation {
 	return c.op
 }
 
-func (c *ginCtx) Context() context.Context {
-	return c.orig.Request.Context()
+func (c *ginCtx) Context() *gin.Context {
+	return c.Context()
 }
 
 func (c *ginCtx) Method() string {
@@ -107,6 +106,7 @@ func (a *ginAdapter) Handle(op *huma.Operation, handler func(huma.Context)) {
 	path = strings.ReplaceAll(path, "{", ":")
 	path = strings.ReplaceAll(path, "}", "")
 	a.router.Handle(op.Method, path, func(c *gin.Context) {
+		//handler(&ginCtx{op: op, orig: c})
 		ctx := &ginCtx{op: op, orig: c}
 		handler(ctx)
 	})
