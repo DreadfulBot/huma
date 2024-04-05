@@ -26,7 +26,7 @@ func (c *ginCtx) Operation() *huma.Operation {
 }
 
 func (c *ginCtx) Context() *gin.Context {
-	return c.Context()
+	return c.orig
 }
 
 func (c *ginCtx) Method() string {
