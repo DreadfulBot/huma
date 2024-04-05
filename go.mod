@@ -1,4 +1,4 @@
-module github.com/DreadfulBot/huma/v2
+module github.com/DreadfulBot/huma
 
 go 1.20
 
